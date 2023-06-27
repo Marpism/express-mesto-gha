@@ -17,7 +17,7 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner })
     .then(card => res.send({ data: card }))
     .catch((err) => {
-      if (err.message === 'CastError' || err.message === 'ValidationError') {
+      if (err.message.includes('Validation failed')) {
         res.status(400).send({
           message: 'переданы некорректные данные',
           err: err.message
@@ -58,7 +58,7 @@ module.exports.likeCard = (req, res) => {Card.findByIdAndUpdate(
       res.status(404).send({
         message: 'Пользователь не найден'
       })
-    } else if (err.message === 'CastError' || err.message === 'ValidationError') {
+    } else if (err.message.includes('Validation failed')) {
       res.status(400).send({
         message: 'переданы некорректные данные',
         err: err.message
@@ -82,7 +82,7 @@ module.exports.dislikeCard = (req, res) => {Card.findByIdAndUpdate(
     res.status(404).send({
       message: 'Пользователь не найден'
     })
-  } else if (err.message === 'CastError' || err.message === 'ValidationError') {
+  } else if (err.message.includes('Validation failed')) {
     res.status(400).send({
       message: 'переданы некорректные данные',
       err: err.message

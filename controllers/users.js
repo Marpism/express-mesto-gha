@@ -13,18 +13,22 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUser = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
-    .then(user => res.send({ data: user }))
-    .catch((err) => {
-      if (err.message === 'Not found') {
+
+    .then((user) => {
+      // res.send({ data: user })
+      if (!user) {
         res.status(404).send({
           message: 'Пользователь не найден'
         })
       } else {
-        res.status(500).send({
+        res.status(200).send({ data: user }) //ОШИБКА?
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
         message: 'Что-то не так',
         err: err.message
-      })}
-    });
+      })});
 };
 
 module.exports.createUser = (req, res) => {
@@ -32,7 +36,7 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then(user => res.send({ data: user }))
     .catch((err) => {
-      if (err.message === 'CastError' || err.message === 'ValidationError') {
+      if (err.message.includes('Validation failed')) {
         res.status(400).send({
           message: 'переданы некорректные данные',
           err: err.message
@@ -47,14 +51,14 @@ module.exports.createUser = (req, res) => {
 
 module.exports.updateUser = (req, res) => {
   const userId = req.user._id;
-  User.findByIdAndUpdate(userId, { name: req.body.name, about: req.body.about })
+  User.findByIdAndUpdate(userId, { name: req.body.name }, { new: true, runValidators: true })
       .then(user => res.send({ data: user }))
       .catch((err) => {
         if (err.message === 'Not found') {
           res.status(404).send({
             message: 'Пользователь не найден'
           })
-        } else if (err.message === 'CastError' || err.message === 'ValidationError') {
+        } else if (err.message.includes('Validation failed')) {
           res.status(400).send({
             message: 'переданы некорректные данные',
             err: err.message
@@ -76,7 +80,7 @@ module.exports.updateAvatar = (req, res) => {
         res.status(404).send({
           message: 'Пользователь не найден'
         })
-      } else if (err.message === 'CastError' || err.message === 'ValidationError') {
+      } else if (err.message.includes('Validation failed')) {
         res.status(400).send({
           message: 'переданы некорректные данные',
           err: err.message
