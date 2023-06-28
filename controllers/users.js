@@ -21,7 +21,7 @@ module.exports.getUser = (req, res) => {
           message: 'Пользователь не найден'
         })
       } else {
-        res.status(200).send({ data: user }) //ОШИБКА?
+        res.status(200).send({ data: user }) //ошибки нет, код 400 не предусмотрен ТЗ
       }
     })
     .catch((err) => {
@@ -51,8 +51,8 @@ module.exports.createUser = (req, res) => {
 
 module.exports.updateUser = (req, res) => {
   const userId = req.user._id;
-  User.findByIdAndUpdate(userId, { name: req.body.name }, { new: true, runValidators: true })
-      .then(user => res.send({ data: user }))
+  User.findByIdAndUpdate(userId, { name: req.body.name, about: req.body.about }, { new: true, runValidators: true })
+      .then(user => res.send({ data: user })) // ДАННЫЕ В ОТВЕТЕ NULL, 02
       .catch((err) => {
         if (err.message === 'Not found') {
           res.status(404).send({

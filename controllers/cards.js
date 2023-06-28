@@ -17,7 +17,7 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner })
     .then(card => res.send({ data: card }))
     .catch((err) => {
-      if (err.message.includes('Validation failed')) {
+      if (err.message.includes('validation failed')) {
         res.status(400).send({
           message: 'переданы некорректные данные',
           err: err.message
@@ -33,7 +33,7 @@ module.exports.createCard = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   // const { userId } = req.params;
   Card.findByIdAndRemove(req.params._id)
-    .then(card => res.send({ data: card }))
+    .then(() => res.send({ message: 'Карточка удалена'}))
     .catch((err) => {
       if (err.message === 'Not found') {
         res.status(404).send({
@@ -58,7 +58,7 @@ module.exports.likeCard = (req, res) => {Card.findByIdAndUpdate(
       res.status(404).send({
         message: 'Пользователь не найден'
       })
-    } else if (err.message.includes('Validation failed')) {
+    } else if (err.message.includes('validation failed')) {
       res.status(400).send({
         message: 'переданы некорректные данные',
         err: err.message
@@ -82,7 +82,7 @@ module.exports.dislikeCard = (req, res) => {Card.findByIdAndUpdate(
     res.status(404).send({
       message: 'Пользователь не найден'
     })
-  } else if (err.message.includes('Validation failed')) {
+  } else if (err.message.includes('validation failed')) {
     res.status(400).send({
       message: 'переданы некорректные данные',
       err: err.message
