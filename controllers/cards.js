@@ -56,9 +56,10 @@ module.exports.likeCard = (req, res) => {Card.findByIdAndUpdate(
   .catch((err) => {
     if (err.message === 'Not found') {
       res.status(404).send({
-        message: 'Пользователь не найден'
+        message: 'Пользователь не найден',
+        err: err.message
       })
-    } else if (err.message.includes('validation failed')) {
+    } else if (err.message.includes('Cast to ObjectId failed')) {
       res.status(400).send({
         message: 'переданы некорректные данные',
         err: err.message
@@ -78,7 +79,7 @@ module.exports.dislikeCard = (req, res) => {Card.findByIdAndUpdate(
 )
 .then(card => res.send({ data: card }))
 .catch((err) => {
-  if (err.message === 'Not found') {
+  if (err.message.includes('Cast')) {
     res.status(404).send({
       message: 'Пользователь не найден'
     })

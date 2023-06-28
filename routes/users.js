@@ -3,7 +3,7 @@ const { getUsers, getUser, createUser, updateUser, updateAvatar } = require('../
 
 userRouter.get('/users', getUsers);
 userRouter.post('/users', createUser);
-userRouter.get('/users/:userId', getUser);
+userRouter.get('/users/:_id', getUser);
 userRouter.patch('/users/me', updateUser);
 userRouter.patch('/users/me/avatar', updateAvatar);
 

@@ -11,8 +11,8 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUser = (req, res) => {
-  const { userId } = req.params;
-  User.findById(userId)
+  // const { userId } = req.params;
+  User.findById(req.params._id)
 
     .then((user) => {
       // res.send({ data: user })
@@ -21,7 +21,7 @@ module.exports.getUser = (req, res) => {
           message: 'Пользователь не найден'
         })
       } else {
-        res.status(200).send({ data: user }) //ошибки нет, код 400 не предусмотрен ТЗ
+        res.status(200).send({ data: user })
       }
     })
     .catch((err) => {
@@ -85,7 +85,13 @@ module.exports.updateAvatar = (req, res) => {
           message: 'переданы некорректные данные',
           err: err.message
         })
-        } else {
+        } else if(req.body.avatar === res.body.avatar) {
+          res.status(400).send({
+            message: 'аватар совпадает',
+            err: err.message
+          })
+        }
+         else {
         res.status(500).send({
           message: 'Что-то не так',
           err: err.message
