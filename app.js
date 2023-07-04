@@ -4,9 +4,11 @@ const process = require('process');
 const bodyParser = require('body-parser');
 const usersRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
+const nocache = require('nocache');
 
 const { PORT = 3000 } = process.env;
 const app = express();
+app.use(nocache());
 // app.use(express.json());
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
@@ -19,7 +21,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '64a4440734eff4c9d178e131'
+    _id: '64a457a478a7f067d576035e'
   };
   next();
 });
