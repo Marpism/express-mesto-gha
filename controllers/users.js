@@ -11,8 +11,8 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUser = (req, res) => {
-  // const { userId } = req.params;
-  User.findById(req.user._id)
+  const { userId } = req.params;
+  User.findById(userId)
 
     .then((user) => {
       // res.send({ data: user })
@@ -51,7 +51,7 @@ module.exports.createUser = (req, res) => {
 
 module.exports.updateUser = (req, res) => {
   const userId = req.user._id;
-  User.findByIdAndUpdate(userId, { name: req.body.name, about: req.body.about }, { runValidators: true })
+  User.findByIdAndUpdate(userId, { name: req.body.name, about: req.body.about }, { new: true, runValidators: true })
       .then(user => res.send({ data: user }))
       .catch((err) => {
         if (err.message === 'Not found') {
@@ -73,7 +73,7 @@ module.exports.updateUser = (req, res) => {
 
 module.exports.updateAvatar = (req, res) => {
   const userId = req.user._id;
-  User.findByIdAndUpdate(userId, { avatar: req.body.avatar }, { runValidators: true })
+  User.findByIdAndUpdate(userId, { avatar: req.body.avatar }, {new: true, runValidators: true })
     .then(user => res.send({ data: user }))
     .catch((err) => {
       if (err.message === 'Not found') {
