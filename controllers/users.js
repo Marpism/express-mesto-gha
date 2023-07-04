@@ -1,7 +1,7 @@
 const User = require('../models/users');
 
 module.exports.getUsers = (req, res) => {
-  User.find({})
+  User.find({}, { new: true, runValidators: true })
       .then(users => res.send({ data: users }))
       .catch((err) => {
         res.status(500).send({
@@ -12,7 +12,7 @@ module.exports.getUsers = (req, res) => {
 
 module.exports.getUser = (req, res) => {
   const { userId } = req.params;
-  User.findById(userId)
+  User.findById(userId, { new: true, runValidators: true })
     .then((user) => {
       // res.send({ data: user })
       if (!user) {
@@ -32,7 +32,7 @@ module.exports.getUser = (req, res) => {
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
+  User.create({ name, about, avatar }, { new: true, runValidators: true })
     .then(user => res.send({ data: user }))
     .catch((err) => {
       if (err.message.includes('validation failed')) {
