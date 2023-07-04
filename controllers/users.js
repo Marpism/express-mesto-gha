@@ -13,7 +13,6 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUser = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
-
     .then((user) => {
       // res.send({ data: user })
       if (!user) {
