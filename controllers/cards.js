@@ -52,7 +52,7 @@ module.exports.likeCard = (req, res) => {Card.findByIdAndUpdate(
   { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
   { new: true, runValidators: true },
 )
-  .then(card => res.send({ data: card }))
+  .then(card => res.send({ _id: req.params.cardId, likes: card.likes.length }))
   .catch((err) => {
     if (err.message === 'Not found') {
       res.status(404).send({
@@ -77,7 +77,7 @@ module.exports.dislikeCard = (req, res) => {Card.findByIdAndUpdate(
   { $pull: { likes: req.user._id } }, // убрать _id из массива
   { new: true, runValidators: true },
 )
-.then(card => res.send({ data: card }))
+.then(card => res.send({ _id: req.params.cardId, likes: card.likes.length }))
 .catch((err) => {
   if (err.message.includes('Cast')) {
     res.status(404).send({
