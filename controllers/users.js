@@ -13,14 +13,14 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUser = (req, res) => {
   // const { userId } = req.params;
   User.findById(req.params._id, {runValidators: true })
-    .then((user) => {
-      // res.send({ data: user })
+    .then(user => {
+      res.send({ data: user })
       if (!user) {
         res.status(404).send({
           message: 'Пользователь не найден'
         })
       }
-      return res.status(200).send({ user })
+      // return res.status(200).send({ user })
     })
     .catch((err) => {
       res.status(400).send({
