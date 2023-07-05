@@ -33,7 +33,7 @@ module.exports.getUser = (req, res) => {
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then(user => res.status(201).send({message: `Пользователь ${name} успешно создан`, data: user}))
+    .then(user => res.status(201).send({data: user}))
     .catch((err) => {
       if (err.message.includes('validation failed')) {
         res.status(400).send({
