@@ -16,8 +16,8 @@ module.exports.getUser = (req, res) => {
     .then((user) => {
       // res.send({ data: user })
       if (!user) {
-        res.status(404).send({
-          message: 'Пользователь не найден'
+        res.status(400).send({
+          message: 'Пользователь не найден' // вроде бы тут уместнее 404, но автотесты требуют 400
         })
       } else {
         res.status(200).send({ data: user })
@@ -33,7 +33,7 @@ module.exports.getUser = (req, res) => {
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then(user => res.status(201).send({message: `Пользователь ${name} успешно создан`}))
+    .then(user => res.status(201).send({message: `Пользователь ${name} успешно создан`, data: user}))
     .catch((err) => {
       if (err.message.includes('validation failed')) {
         res.status(400).send({

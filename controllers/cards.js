@@ -48,9 +48,9 @@ module.exports.deleteCard = (req, res) => {
 };
 
 module.exports.likeCard = (req, res) => {Card.findByIdAndUpdate(
-  req.params._id,
+  req.params.cardId,
   { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-  { new: true, runValidators: true },
+  { new: true },
 )
   .then(card => res.send({ _id: req.params.cardId, likes: card.likes.length }))
   .catch((err) => {
@@ -71,6 +71,31 @@ module.exports.likeCard = (req, res) => {Card.findByIdAndUpdate(
       })}
   });
 }
+
+// module.exports.likeCard = (req, res) => {
+//   Card.findByIdAndUpdate(
+//     req.params.cardId,
+//     { $addToSet: { likes: req.user._id } },
+//     { new: true },
+//   )
+//     .then((card) => {
+//       if (!card) {
+//         NotFoundError.message = 'Карточка не найдена';
+//         NotFoundError.name = 'NotFoundError';
+//         throw NotFoundError;
+//       }
+//       res.status(200).send({ _id: req.params.cardId, likes: card.likes.length });
+//     })
+//     .catch((err) => {
+//       if (err.name === 'CastError') {
+//         res.status(400).send({ message: err.message });
+//       } else if (err.name === 'NotFoundError') {
+//         res.status(404).send({ message: err.message });
+//       } else {
+//         res.status(500).send({ message: err.message });
+//       }
+//     });
+// };
 
 module.exports.dislikeCard = (req, res) => {Card.findByIdAndUpdate(
   req.params.cardId,
