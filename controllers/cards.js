@@ -54,9 +54,9 @@ module.exports.likeCard = (req, res) => {Card.findByIdAndUpdate(
 )
   .then(card => res.send({ _id: req.params.cardId, likes: card.likes.length }))
   .catch((err) => {
-    if (err.message.includes('Not found')) {
+    if (err.message.includes('Cannot read properties')) {
       res.status(404).send({
-        message: 'Пользователь не найден',
+        message: 'Карточка не найдена',
         err: err.message
       })
     } else if (err.message.includes('Cast to ObjectId failed')) {
@@ -80,22 +80,21 @@ module.exports.dislikeCard = (req, res) => {Card.findByIdAndUpdate(
 )
 .then(card => res.send({ _id: req.params.cardId, likes: card.likes.length }))
 .catch((err) => {
-  if (err.message.includes('Cast to ObjectId failed for value')) {
+  if (err.message.includes('Cannot read properties')) {
     res.status(404).send({
-      message: 'Пользователь не найден',
+      message: 'Карточка не найдена',
       err: err.message
     })
-  } else if (err.message.includes('validation failed')) {
+  } else if (err.message.includes('Cast to ObjectId failed')) {
     res.status(400).send({
       message: 'переданы некорректные данные',
       err: err.message
     })
-    }
-    else {
+    } else {
     res.status(500).send({
       message: 'Что-то не так',
       err: err.message
     })}
-  });
+});
 }
 
