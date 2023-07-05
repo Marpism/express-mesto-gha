@@ -6,6 +6,6 @@ userRouter.post('/users', createUser);
 userRouter.get('/users/:_id', getUser);
 userRouter.patch('/users/me', updateUser);
 userRouter.patch('/users/me/avatar', updateAvatar);
-userRouter.patch('/404', notFoundError);
+userRouter.patch('/:somePath', notFoundError);
 
 module.exports = userRouter;

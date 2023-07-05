@@ -54,7 +54,7 @@ module.exports.likeCard = (req, res) => {Card.findByIdAndUpdate(
 )
   .then(card => res.send({ _id: req.params.cardId, likes: card.likes.length }))
   .catch((err) => {
-    if (err.message.includes('Cast to ObjectId failed for value')) {
+    if (err.message.includes('Not found')) {
       res.status(404).send({
         message: 'Пользователь не найден',
         err: err.message
@@ -72,30 +72,6 @@ module.exports.likeCard = (req, res) => {Card.findByIdAndUpdate(
   });
 }
 
-// module.exports.likeCard = (req, res) => {
-//   Card.findByIdAndUpdate(
-//     req.params.cardId,
-//     { $addToSet: { likes: req.user._id } },
-//     { new: true },
-//   )
-//     .then((card) => {
-//       if (!card) {
-//         NotFoundError.message = 'Карточка не найдена';
-//         NotFoundError.name = 'NotFoundError';
-//         throw NotFoundError;
-//       }
-//       res.status(200).send({ _id: req.params.cardId, likes: card.likes.length });
-//     })
-//     .catch((err) => {
-//       if (err.name === 'CastError') {
-//         res.status(400).send({ message: err.message });
-//       } else if (err.name === 'NotFoundError') {
-//         res.status(404).send({ message: err.message });
-//       } else {
-//         res.status(500).send({ message: err.message });
-//       }
-//     });
-// };
 
 module.exports.dislikeCard = (req, res) => {Card.findByIdAndUpdate(
   req.params.cardId,
@@ -107,14 +83,15 @@ module.exports.dislikeCard = (req, res) => {Card.findByIdAndUpdate(
   if (err.message.includes('Cast to ObjectId failed for value')) {
     res.status(404).send({
       message: 'Пользователь не найден',
-      message: err.message
+      err: err.message
     })
   } else if (err.message.includes('validation failed')) {
     res.status(400).send({
       message: 'переданы некорректные данные',
       err: err.message
     })
-    } else {
+    }
+    else {
     res.status(500).send({
       message: 'Что-то не так',
       err: err.message

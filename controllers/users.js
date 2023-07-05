@@ -11,8 +11,8 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUser = (req, res) => {
-  const { userId } = req.params;
-  User.findById(userId, { new: true, runValidators: true })
+  // const { userId } = req.params;
+  User.findById(req.params._id, {runValidators: true })
     .then((user) => {
       // res.send({ data: user })
       if (!user) {
@@ -24,8 +24,8 @@ module.exports.getUser = (req, res) => {
       }
     })
     .catch((err) => {
-      res.status(500).send({
-        message: 'Что-то не так',
+      res.status(400).send({
+        message: 'переданы некорректные данные',
         err: err.message
       })});
 };
