@@ -31,13 +31,13 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  // const { userId } = req.params;
-  Card.findByIdAndRemove(req.params._id, { new: true, runValidators: true })
+  Card.findByIdAndDelete(req.params.cardId)
     .then(() => res.send({ message: 'Карточка удалена'}))
     .catch((err) => {
-      if (err.message === 'Not found') {
+      if (err.message.includes('Cast to ObjectId failed for value')) {
         res.status(404).send({
-          message: 'Карточка не найдена'
+          message: 'Карточка не найдена',
+          err: err.message
         })
       } else {
         res.status(500).send({
@@ -54,7 +54,7 @@ module.exports.likeCard = (req, res) => {Card.findByIdAndUpdate(
 )
   .then(card => res.send({ _id: req.params.cardId, likes: card.likes.length }))
   .catch((err) => {
-    if (err.message === 'Not found') {
+    if (err.message.includes('Cast to ObjectId failed for value')) {
       res.status(404).send({
         message: 'Пользователь не найден',
         err: err.message
@@ -104,9 +104,10 @@ module.exports.dislikeCard = (req, res) => {Card.findByIdAndUpdate(
 )
 .then(card => res.send({ _id: req.params.cardId, likes: card.likes.length }))
 .catch((err) => {
-  if (err.message.includes('Cast')) {
+  if (err.message.includes('Cast to ObjectId failed for value')) {
     res.status(404).send({
-      message: 'Пользователь не найден'
+      message: 'Пользователь не найден',
+      message: err.message
     })
   } else if (err.message.includes('validation failed')) {
     res.status(400).send({

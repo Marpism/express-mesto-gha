@@ -16,8 +16,8 @@ module.exports.getUser = (req, res) => {
     .then((user) => {
       // res.send({ data: user })
       if (!user) {
-        res.status(400).send({
-          message: 'Пользователь не найден' // вроде бы тут уместнее 404, но автотесты требуют 400
+        res.status(404).send({
+          message: 'Пользователь не найден'
         })
       } else {
         res.status(200).send({ data: user })
@@ -98,3 +98,9 @@ module.exports.updateAvatar = (req, res) => {
         })}
     });
 };
+
+module.exports.notFoundError = (req, res) => {
+  res.status(404).send({
+    message: 'Страницы не существует'
+  })
+}
