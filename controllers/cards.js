@@ -17,7 +17,7 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner })
     .then(card => res.status(CREATED).send({ data: card }))
     .catch((err) => {
-      if (err.message.includes('validation failed')) {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
         res.status(BAD_REQUEST).send({
           message: 'переданы некорректные данные',
           err: err.message
@@ -43,7 +43,7 @@ module.exports.deleteCard = (req, res) => {
       }
     })
     .catch((err) => {
-      if (err.message.includes('Cast to ObjectId failed')) {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
         res.status(BAD_REQUEST).send({
           message: 'переданы некорректные данные',
           err: err.message
@@ -68,7 +68,7 @@ module.exports.likeCard = (req, res) => {Card.findByIdAndUpdate(
         message: 'Карточка не найдена',
         err: err.message
       })
-    } else if (err.name == 'CastError') {
+    } else if (err.name === 'CastError' || err.name === 'ValidationError') {
       res.status(BAD_REQUEST).send({
         message: 'переданы некорректные данные',
         err: err.name
@@ -93,7 +93,7 @@ module.exports.dislikeCard = (req, res) => {Card.findByIdAndUpdate(
       message: 'Карточка не найдена',
       err: err.message
     })
-  } else if (err.message.includes('Cast to ObjectId failed')) {
+  } else if (err.name === 'CastError' || err.name === 'ValidationError') {
     res.status(BAD_REQUEST).send({
       message: 'переданы некорректные данные',
       err: err.message
