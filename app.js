@@ -31,6 +31,10 @@ app.use(bodyParser.urlencoded({ extended: true })); // для приёма ве�
 app.use('/', usersRouter);
 app.use('/', cardRouter);
 
+// app.get('*', function(req, res){
+//   res.status(404).send('what???');
+// });
+
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`)
 });

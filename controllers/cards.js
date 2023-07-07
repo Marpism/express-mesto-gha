@@ -1,29 +1,29 @@
 const Card = require('../models/cards');
+const { CREATED, BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('../error_codes/errorCodes')
 
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then(cards => res.send({ data: cards }))
     .catch((err) => {
-      res.status(500).send({
+      res.status(INTERNAL_SERVER_ERROR).send({
         message: 'Что-то не так',
         err: err.message
       })});
 };
 
 module.exports.createCard = (req, res) => {
-  // console.log(req.user._id);
   const owner = req.user._id;
   const { name, link } = req.body;
   Card.create({ name, link, owner })
-    .then(card => res.send({ data: card }))
+    .then(card => res.status(CREATED).send({ data: card }))
     .catch((err) => {
       if (err.message.includes('validation failed')) {
-        res.status(400).send({
+        res.status(BAD_REQUEST).send({
           message: 'переданы некорректные данные',
           err: err.message
         })
       } else {
-        res.status(500).send({
+        res.status(INTERNAL_SERVER_ERROR).send({
           message: 'Что-то не так',
           err: err.message
       })}
@@ -35,21 +35,21 @@ module.exports.deleteCard = (req, res) => {
     .then((card) => {
       console.log(card);
       if (card == null) {
-        res.status(404).send({
+        res.status(NOT_FOUND).send({
           message: 'Карточка не найдена'
         })
       } else {
-        res.status(200).send({ message: `Карточка ${card._id} успешно удалена` });
+        res.send({ message: `Карточка ${card._id} успешно удалена` });
       }
     })
     .catch((err) => {
       if (err.message.includes('Cast to ObjectId failed')) {
-        res.status(400).send({
+        res.status(BAD_REQUEST).send({
           message: 'переданы некорректные данные',
           err: err.message
         })
         } else {
-        res.status(500).send({
+        res.status(INTERNAL_SERVER_ERROR).send({
           message: 'Что-то не так',
           err: err.message
         })}
@@ -64,17 +64,17 @@ module.exports.likeCard = (req, res) => {Card.findByIdAndUpdate(
   .then(card => res.send({ _id: req.params.cardId, likes: card.likes.length }))
   .catch((err) => {
     if (err.message.includes('Cannot read properties')) {
-      res.status(404).send({
+      res.status(NOT_FOUND).send({
         message: 'Карточка не найдена',
         err: err.message
       })
-    } else if (err.message.includes('Cast to ObjectId failed')) {
-      res.status(400).send({
+    } else if (err.name == 'CastError') {
+      res.status(BAD_REQUEST).send({
         message: 'переданы некорректные данные',
-        err: err.message
+        err: err.name
       })
       } else {
-      res.status(500).send({
+      res.status(INTERNAL_SERVER_ERROR).send({
         message: 'Что-то не так',
         err: err.message
       })}
@@ -89,17 +89,17 @@ module.exports.dislikeCard = (req, res) => {Card.findByIdAndUpdate(
 .then(card => res.send({ _id: req.params.cardId, likes: card.likes.length }))
 .catch((err) => {
   if (err.message.includes('Cannot read properties')) {
-    res.status(404).send({
+    res.status(NOT_FOUND).send({
       message: 'Карточка не найдена',
       err: err.message
     })
   } else if (err.message.includes('Cast to ObjectId failed')) {
-    res.status(400).send({
+    res.status(BAD_REQUEST).send({
       message: 'переданы некорректные данные',
       err: err.message
     })
     } else {
-    res.status(500).send({
+    res.status(INTERNAL_SERVER_ERROR).send({
       message: 'Что-то не так',
       err: err.message
     })}

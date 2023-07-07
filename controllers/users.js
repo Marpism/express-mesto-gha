@@ -1,52 +1,50 @@
 const User = require('../models/users');
+const { CREATED, BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('../error_codes/errorCodes')
 
 module.exports.getUsers = (req, res) => {
   User.find({})
       .then(users => res.send({ data: users }))
       .catch((err) => {
-        res.status(500).send({
+        res.status(INTERNAL_SERVER_ERROR).send({
           message: 'Что-то не так',
           err: err.message
         })});
 };
 
 module.exports.getUser = (req, res) => {
-  // const { userId } = req.params;
   User.findById(req.params._id, {lean: false }, {runValidators: true})
     .then(user => {
-      // res.send({ data: user })
       if (!user) {
-        res.status(404).send({
+        res.status(NOT_FOUND).send({
           message: 'Пользователь не найден'
         })
       } else {
-        res.status(200).send({ data: user })
+        res.send({ data: user })
       }
     })
     .catch((err) => {
-      res.status(400).send({
+      res.status(BAD_REQUEST).send({
         message: 'переданы некорректные данные',
         err: err.message
-      })});
+      })}); //ДОБАВИТЬ ОБРАБОТЧИК 500 ОШИБКИ
 };
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then(user => res.status(201).send({data: user}))
+    .then(user => res.status(CREATED).send({data: user}))
     .catch((err) => {
       if (err.message.includes('validation failed')) {
-        res.status(400).send({
+        res.status(BAD_REQUEST).send({
           message: 'переданы некорректные данные',
           err: err.message
         })
       } else {
-        res.status(500).send({
+        res.status(INTERNAL_SERVER_ERROR).send({
           message: 'Что-то не так',
           err: err.message
       })}
-    }
-    );
+    });
 };
 
 module.exports.updateUser = (req, res) => {
@@ -55,16 +53,16 @@ module.exports.updateUser = (req, res) => {
       .then(user => res.send({ data: user }))
       .catch((err) => {
         if (err.message === 'Not found') {
-          res.status(404).send({
+          res.status(NOT_FOUND).send({
             message: 'Пользователь не найден'
           })
         } else if (err.message.includes('Validation failed')) {
-          res.status(400).send({
+          res.status(BAD_REQUEST).send({
             message: 'переданы некорректные данные',
             err: err.message
           })
           } else {
-          res.status(500).send({
+          res.status(INTERNAL_SERVER_ERROR).send({
             message: 'Что-то не так',
             err: err.message
           })}
@@ -77,11 +75,11 @@ module.exports.updateAvatar = (req, res) => {
     .then(user => res.send({ data: user }))
     .catch((err) => {
       if (err.message === 'Not found') {
-        res.status(404).send({
+        res.status(NOT_FOUND).send({
           message: 'Пользователь не найден'
         })
       } else if (err.message.includes('Validation failed')) {
-        res.status(400).send({
+        res.status(BAD_REQUEST).send({
           message: 'переданы некорректные данные',
           err: err.message
         })
@@ -92,7 +90,7 @@ module.exports.updateAvatar = (req, res) => {
           })
         }
          else {
-        res.status(500).send({
+        res.status(INTERNAL_SERVER_ERROR).send({
           message: 'Что-то не так',
           err: err.message
         })}
@@ -100,7 +98,7 @@ module.exports.updateAvatar = (req, res) => {
 };
 
 module.exports.notFoundError = (req, res) => {
-  res.status(404).send({
+  res.status(NOT_FOUND).send({
     message: 'Страницы не существует'
   })
 }
