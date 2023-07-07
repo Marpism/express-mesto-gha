@@ -84,7 +84,7 @@ module.exports.likeCard = (req, res) => {Card.findByIdAndUpdate(
 module.exports.dislikeCard = (req, res) => {Card.findByIdAndUpdate(
   req.params.cardId,
   { $pull: { likes: req.user._id } }, // убрать _id из массива
-  { new: true, runValidators: true },
+  { new: true },
 )
 .then(card => res.send({ _id: req.params.cardId, likes: card.likes.length }))
 .catch((err) => {

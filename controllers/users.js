@@ -18,15 +18,23 @@ module.exports.getUser = (req, res) => {
         res.status(NOT_FOUND).send({
           message: 'Пользователь не найден'
         })
-      } else {
+      }
+      else {
         res.send({ data: user })
       }
     })
     .catch((err) => {
-      res.status(BAD_REQUEST).send({
-        message: 'переданы некорректные данные',
-        err: err.message
-      })}); //ДОБАВИТЬ ОБРАБОТЧИК 500 ОШИБКИ
+      if (err.name === 'CastError') {
+        res.status(BAD_REQUEST).send({
+          message: 'переданы некорректные данные',
+          err: err.message
+        })
+      } else {
+        res.status(INTERNAL_SERVER_ERROR).send({
+        message: 'Что-то не так',
+        // err: err.name
+      })}
+    });
 };
 
 module.exports.createUser = (req, res) => {
@@ -34,7 +42,7 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then(user => res.status(CREATED).send({data: user}))
     .catch((err) => {
-      if (err.message.includes('validation failed')) {
+      if (err.name === 'CastError') {
         res.status(BAD_REQUEST).send({
           message: 'переданы некорректные данные',
           err: err.message
@@ -56,7 +64,7 @@ module.exports.updateUser = (req, res) => {
           res.status(NOT_FOUND).send({
             message: 'Пользователь не найден'
           })
-        } else if (err.message.includes('Validation failed')) {
+        } else if (err.name === 'CastError') {
           res.status(BAD_REQUEST).send({
             message: 'переданы некорректные данные',
             err: err.message
@@ -78,16 +86,11 @@ module.exports.updateAvatar = (req, res) => {
         res.status(NOT_FOUND).send({
           message: 'Пользователь не найден'
         })
-      } else if (err.message.includes('Validation failed')) {
+      } else if (err.name === 'CastError') {
         res.status(BAD_REQUEST).send({
           message: 'переданы некорректные данные',
           err: err.message
         })
-        } else if(req.body.avatar === res.body.avatar) {
-          res.status(400).send({
-            message: 'аватар совпадает',
-            err: err.message
-          })
         }
          else {
         res.status(INTERNAL_SERVER_ERROR).send({
@@ -97,8 +100,8 @@ module.exports.updateAvatar = (req, res) => {
     });
 };
 
-module.exports.notFoundError = (req, res) => {
-  res.status(NOT_FOUND).send({
-    message: 'Страницы не существует'
-  })
-}
+// module.exports.notFoundError = (req, res) => {
+//   res.status(NOT_FOUND).send({
+//     message: 'Страницы не существует'
+//   })
+// }
