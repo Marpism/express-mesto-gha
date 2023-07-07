@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 // app.use(bodyParser.urlencoded({ extended: true })); // для приёма веб-страниц внутри POST-запроса
 app.use('/', usersRouter);
 app.use('/', cardRouter);
-app.get('*', function(req, res){
+app.use('*', function(req, res){
   res.status(404).send('Страницы не существует');
 });
 

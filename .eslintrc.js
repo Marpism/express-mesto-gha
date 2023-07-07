@@ -4,9 +4,6 @@ module.exports = {
         "commonjs": true,
         "es2021": true
     },
-    "extends": [
-        "eslint:airbnb-base"
-    ],
     "overrides": [
         {
             "env": {
