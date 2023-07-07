@@ -9,12 +9,10 @@ const nocache = require('nocache');
 const { PORT = 3000 } = process.env;
 const app = express();
 app.use(nocache());
-// app.use(express.json());
+app.use(express.json());
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
-  // useCreateIndex: true,
-  // useFindAndModify: false, не работает
 
 }).then(() => {
   console.log('Соединение с ДБ установлено') });
@@ -26,14 +24,13 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(bodyParser.json()); // для собирания JSON-формата
-app.use(bodyParser.urlencoded({ extended: true })); // для приёма веб-страниц внутри POST-запроса
+// app.use(bodyParser.json()); // для собирания JSON-формата
+// app.use(bodyParser.urlencoded({ extended: true })); // для приёма веб-страниц внутри POST-запроса
 app.use('/', usersRouter);
 app.use('/', cardRouter);
-
-// app.get('*', function(req, res){
-//   res.status(404).send('what???');
-// });
+app.get('*', function(req, res){
+  res.status(404).send('Страницы не существует');
+});
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`)
