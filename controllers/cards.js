@@ -7,8 +7,9 @@ module.exports.getCards = (req, res) => {
     .catch((err) => {
       res.status(INTERNAL_SERVER_ERROR).send({
         message: 'Что-то не так',
-        err: err.message
-      })});
+        // err: err.message
+      })
+    });
 };
 
 module.exports.createCard = (req, res) => {
@@ -20,13 +21,14 @@ module.exports.createCard = (req, res) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         res.status(BAD_REQUEST).send({
           message: 'переданы некорректные данные',
-          err: err.message
+          // err: err.message
         })
       } else {
         res.status(INTERNAL_SERVER_ERROR).send({
           message: 'Что-то не так',
-          err: err.message
-      })}
+          // err: err.message
+        })
+      }
     });
 };
 
@@ -37,25 +39,28 @@ module.exports.deleteCard = (req, res) => {
       err.status = NOT_FOUND;
       throw err;
     })
-    .then((card) => {res.send({ message: `Карточка ${card._id} успешно удалена` })})
+    .then((card) => { res.send({ message: `Карточка ${card._id} успешно удалена` }) })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         res.status(BAD_REQUEST).send({
           message: 'переданы некорректные данные',
-          err: err.message
-        })} else if (err.status == NOT_FOUND) {
-        res.status(NOT_FOUND).send({message: 'Карточка не найдена'})
+          // err: err.message
+        })
+      } else if (err.status == NOT_FOUND) {
+        res.status(NOT_FOUND).send({ message: 'Карточка не найдена' })
       } else {
         res.status(INTERNAL_SERVER_ERROR).send({
-        message: 'Что-то не так',
-      })}
+          message: 'Что-то не так',
+        })
+      }
     });
 };
 
-module.exports.likeCard = (req, res) => {Card.findByIdAndUpdate(
-  req.params.cardId,
-  { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-  { new: true },)
+module.exports.likeCard = (req, res) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
+    { new: true },)
   .orFail(() => {
     const err = new Error();
     err.status = NOT_FOUND;
@@ -64,41 +69,46 @@ module.exports.likeCard = (req, res) => {Card.findByIdAndUpdate(
   .then(card => res.send({ _id: req.params.cardId, likes: card.likes.length }))
   .catch((err) => {
     if (err.status == NOT_FOUND) {
-      res.status(NOT_FOUND).send({message: 'Карточка не найдена'})
-    }  else if (err.name === 'CastError' || err.name === 'ValidationError') {
+      res.status(NOT_FOUND).send({ message: 'Карточка не найдена' })
+    } else if (err.name === 'CastError' || err.name === 'ValidationError') {
       res.status(BAD_REQUEST).send({
         message: 'переданы некорректные данные',
         err: err.name
-      })} else {
+      })
+    } else {
       res.status(INTERNAL_SERVER_ERROR).send({
         message: 'Что-то не так',
-        err: err.message
-      })}
+        // err: err.message
+      })
+    }
   });
 }
 
-module.exports.dislikeCard = (req, res) => {Card.findByIdAndUpdate(
-  req.params.cardId,
-  { $pull: { likes: req.user._id } }, // убрать _id из массива
-  { new: true },)
+module.exports.dislikeCard = (req, res) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } }, // убрать _id из массива
+    { new: true },)
   .orFail(() => {
     const err = new Error();
     err.status = NOT_FOUND;
     throw err;
   })
-.then(card => res.send({ _id: req.params.cardId, likes: card.likes.length }))
-.catch((err) => {
-  if (err.status == NOT_FOUND) {
-    res.status(NOT_FOUND).send({message: 'Карточка не найдена'})
-  }  else if (err.name === 'CastError' || err.name === 'ValidationError') {
-    res.status(BAD_REQUEST).send({
-      message: 'переданы некорректные данные',
-      err: err.name
-    })} else {
-    res.status(INTERNAL_SERVER_ERROR).send({
-      message: 'Что-то не так',
-      err: err.message
-    })}
-});
+  .then(card => res.send({ _id: req.params.cardId, likes: card.likes.length }))
+  .catch((err) => {
+    if (err.status == NOT_FOUND) {
+      res.status(NOT_FOUND).send({ message: 'Карточка не найдена' })
+    } else if (err.name === 'CastError' || err.name === 'ValidationError') {
+      res.status(BAD_REQUEST).send({
+        message: 'переданы некорректные данные',
+        err: err.name
+      })
+    } else {
+      res.status(INTERNAL_SERVER_ERROR).send({
+        message: 'Что-то не так',
+        // err: err.message
+      })
+    }
+  });
 }
 

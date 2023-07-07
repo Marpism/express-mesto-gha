@@ -15,7 +15,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 
 }).then(() => {
-  console.log('Соединение с ДБ установлено') });
+  console.log('Соединение с ДБ установлено')
+});
 
 app.use((req, res, next) => {
   req.user = {
@@ -24,12 +25,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use(bodyParser.json()); // для собирания JSON-формата
-// app.use(bodyParser.urlencoded({ extended: true })); // для приёма веб-страниц внутри POST-запроса
 app.use('/', usersRouter);
 app.use('/', cardRouter);
-app.use('*', function(req, res){
-  res.status(404).send({message: 'Страницы не существует'});
+app.use('*', function (req, res) {
+  res.status(404).send({ message: 'Страницы не существует' });
 });
 
 app.listen(PORT, () => {
