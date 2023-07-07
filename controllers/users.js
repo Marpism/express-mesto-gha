@@ -58,13 +58,14 @@ module.exports.createUser = (req, res) => {
 module.exports.updateUser = (req, res) => {
   const userId = req.user._id;
   User.findByIdAndUpdate(userId, { name: req.body.name, about: req.body.about }, { new: true, runValidators: true })
+      .orFail(() => {
+        const err = new Error('Пользователь не найден');
+        err.status = NOT_FOUND;
+        throw err;
+      })
       .then(user => res.send({ data: user }))
       .catch((err) => {
-        if (err.message === 'Not found') {
-          res.status(NOT_FOUND).send({
-            message: 'Пользователь не найден'
-          })
-        } else if (err.name === 'CastError' || err.name === 'ValidationError') {
+        if (err.name === 'CastError' || err.name === 'ValidationError') {
           res.status(BAD_REQUEST).send({
             message: 'переданы некорректные данные',
             err: err.message
