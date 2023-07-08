@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const usersRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const nocache = require('nocache');
-const NOT_FOUND = require('./error_codes/errorCodes');
+const { NOT_FOUND } = require('./error_codes/errorCodes');
 
 const { PORT = 3000 } = process.env;
 const app = express();
