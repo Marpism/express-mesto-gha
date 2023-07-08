@@ -18,7 +18,7 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner })
     .then(card => res.status(CREATED).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         res.status(BAD_REQUEST).send({
           message: 'переданы некорректные данные',
           // err: err.message
@@ -41,7 +41,7 @@ module.exports.deleteCard = (req, res) => {
     })
     .then((card) => { res.send({ message: `Карточка ${card._id} успешно удалена` }) })
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res.status(BAD_REQUEST).send({
           message: 'переданы некорректные данные',
           // err: err.message
@@ -70,7 +70,7 @@ module.exports.likeCard = (req, res) => {
   .catch((err) => {
     if (err.status == NOT_FOUND) {
       res.status(NOT_FOUND).send({ message: 'Карточка не найдена' })
-    } else if (err.name === 'CastError' || err.name === 'ValidationError') {
+    } else if (err.name === 'CastError') {
       res.status(BAD_REQUEST).send({
         message: 'переданы некорректные данные',
         err: err.name
@@ -82,7 +82,7 @@ module.exports.likeCard = (req, res) => {
       })
     }
   });
-}
+};
 
 module.exports.dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
@@ -98,7 +98,7 @@ module.exports.dislikeCard = (req, res) => {
   .catch((err) => {
     if (err.status == NOT_FOUND) {
       res.status(NOT_FOUND).send({ message: 'Карточка не найдена' })
-    } else if (err.name === 'CastError' || err.name === 'ValidationError') {
+    } else if (err.name === 'CastError') {
       res.status(BAD_REQUEST).send({
         message: 'переданы некорректные данные',
         err: err.name
@@ -110,5 +110,5 @@ module.exports.dislikeCard = (req, res) => {
       })
     }
   });
-}
+};
 

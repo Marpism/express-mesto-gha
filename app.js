@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const usersRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const nocache = require('nocache');
+const NOT_FOUND = require('./error_codes/errorCodes');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -28,7 +29,7 @@ app.use((req, res, next) => {
 app.use('/', usersRouter);
 app.use('/', cardRouter);
 app.use('*', function (req, res) {
-  res.status(404).send({ message: 'Страницы не существует' });
+  res.status(NOT_FOUND).send({ message: 'Страницы не существует' });
 });
 
 app.listen(PORT, () => {
