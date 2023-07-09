@@ -1,4 +1,5 @@
-module.exports = {
+{
+    "extends": "airbnb-base",
     "env": {
         "es2021": true
     },
@@ -19,7 +20,6 @@ module.exports = {
         "ecmaVersion": "latest"
     },
     "plugins": [
-        "react"
     ],
     "rules": {
       "no-unused-vars": "off",
