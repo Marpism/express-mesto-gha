@@ -2,39 +2,38 @@ const Card = require('../models/cards');
 const {
   CREATED, BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR,
 } = require('../error_codes/errorCodes');
+const BadReqError = require('../errors/BadReqError');
+const NotFoundError = require('../errors/NotFoundError');
+const UnauthError = require('../errors/UnauthError');
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch((err) => {
-      res.status(INTERNAL_SERVER_ERROR).send({
-        message: 'Что-то не так',
-        // err: err.message
-      });
-    });
+    .catch(next);
 };
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const owner = req.user._id;
   const { name, link } = req.body;
   Card.create({ name, link, owner })
     .then((card) => res.status(CREATED).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({
-          message: 'переданы некорректные данные',
-          // err: err.message
-        });
-      } else {
-        res.status(INTERNAL_SERVER_ERROR).send({
-          message: 'Что-то не так',
-          // err: err.message
-        });
+        return next(new BadReqError('переданы некорректные данные'))
+        // res.status(BAD_REQUEST).send({
+        //   message: 'переданы некорректные данные',
+        //   // err: err.message
+        // });
       }
+        // res.status(INTERNAL_SERVER_ERROR).send({
+        //   message: 'Что-то не так',
+        //   // err: err.message
+        // });
+      next(err);
     });
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => { //ДОПИСАТЬ ЧТОБЫ УДАЛЯТЬ МОГ ТОЛЬКО ОУНЕР
   Card.findByIdAndDelete(req.params.cardId)
     .orFail(() => {
       const err = new Error();
