@@ -94,20 +94,26 @@ module.exports.updateAvatar = (req, res, next) => {
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email }) // добавить метод в модель?
-  .orFail(() => {
-    throw new NotFoundError('Пользователь не найден');
+
+  .then((user) => {
+    if (!user) {
+      return Promise.reject(new NotFoundError('Неправильные почта или пароль'));
+    }
+    // console.log(user)
+    return bcrypt.compare(password, user.password)
+      .then((matched) => {
+        if (!matched) {
+          return Promise.reject(new NotFoundError('Неправильные почта или пароль'));
+        }
+      return user;
+      });
   })
   .then((user) => {
-    return bcrypt.compare(password, user.password);
-  })
-  .then((matched) => {
-    if (!matched) {
-      return Promise.reject(new Error('Неправильные почта или пароль'))
-    }
     const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+    console.log(user);
     res.send({ token, message: 'Добро пожаловать!' });
   })
-  .catch((err) => { // обработка ошибки не по тз
+  .catch((err) => {
     if (err.name === 'ValidationError') {
       return next(new BadReqError('переданы некорректные данные'))
     } else if (err.status === NOT_FOUND) {
@@ -117,3 +123,23 @@ module.exports.login = (req, res, next) => {
     }
   });
 }
+
+// userSchema.statics.findUserByCredentials = function (email, password) {
+//   return this.findOne({ email })
+//     .then((user) => {
+//       if (!user) {
+//         return Promise.reject(new Error('Неправильные почта или пароль'));
+//       }
+
+//       return bcrypt.compare(password, user.password)
+//         .then((matched) => {
+//           if (!matched) {
+//             return Promise.reject(new Error('Неправильные почта или пароль'));
+//           }
+
+//           return user; // теперь user доступен
+//         });
+//     });
+// };
+
+// module.exports = mongoose.model('user', userSchema);

@@ -27,8 +27,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 //   next();
 // });
 
-app.use(errors());
-
 // app.post('/signin', login);
 
 app.post('/signin', celebrate({
@@ -49,7 +47,7 @@ app.post('/signup', celebrate({
     password: Joi.string().min(8).required(),
   }),
 }), createUser);
-
+app.use(errors());
 app.use(auth);
 app.use('/', usersRouter);
 app.use('/', cardRouter);
