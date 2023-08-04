@@ -14,11 +14,3 @@ console.log(statusCode)
   next()
 });
 
-// module.exports = (err, req, res, next) => {
-//   const statusCode = err.statusCode ?? INTERNAL_SERVER_ERROR;
-//   const message = (statusCode === INTERNAL_SERVER_ERROR)
-//     ? 'Произошла ошибка сервера'
-//     : err.message;
-//   res.status(statusCode).send({ message });
-//   next();
-// };

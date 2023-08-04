@@ -33,8 +33,8 @@ app.use(errors());
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    email: Joi.string().email().required(),
+    password: Joi.string().min(8).required(),
   }),
 }), login);
 
@@ -42,11 +42,11 @@ app.post('/signin', celebrate({
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().default('Жак-Ив Кусто').min(2).max(30),
-    about: Joi.string().default('Исследователь').min(2).max(30),
+    name: Joi.string().min(2).max(30).default('Жак-Ив Кусто'),
+    about: Joi.string().min(2).max(30).default('Исследователь'),
     avatar: Joi.string(),
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    email: Joi.string().email().required(),
+    password: Joi.string().min(8).required(),
   }),
 }), createUser);
 
