@@ -14,8 +14,8 @@ module.exports = (req, res, next) => {
   let payload;
   try {
     payload = jwt.verify(token, 'some-secret-key');
-  } catch (err) {
-    next(err)
+  } catch (next) {
+    // next(err)
     // return res.status(UNAUTHORIZED).send({ message: 'Необходима авторизация' });
   }
   req.user = payload;
