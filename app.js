@@ -37,9 +37,7 @@ app.post('/signin', celebrate({
     password: Joi.string().min(8).required(),
   }),
 }), login);
-
 // app.post('/signup', createUser);
-
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).default('Жак-Ив Кусто'),
@@ -50,15 +48,14 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
+app.use(errors());
 app.use(auth);
 app.use('/', usersRouter);
 app.use('/', cardRouter);
 app.use('*', (req, res) => {
   res.status(NOT_FOUND).send({ message: 'Страницы не существует' });
 });
-
 app.use(errorHandler);
-
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
