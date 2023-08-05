@@ -20,16 +20,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   console.log('Соединение с ДБ установлено');
 });
 
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '64a457a478a7f067d576035e',
-//   };
-//   next();
-// });
-
 app.use(errors());
-
-// app.post('/signin', login);
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -37,7 +28,7 @@ app.post('/signin', celebrate({
     password: Joi.string().min(8).required(),
   }),
 }), login);
-// app.post('/signup', createUser);
+
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).default('Жак-Ив Кусто'),

@@ -1,9 +1,10 @@
 const bcrypt = require('bcryptjs');
-const User = require('../models/users');
 const jwt = require('jsonwebtoken');
+const User = require('../models/users');
 const BadReqError = require('../errors/BadReqError');
 const NotFoundError = require('../errors/NotFoundError');
 const UnauthError = require('../errors/UnauthError');
+const ConflictError = require('../errors/ConflictError');
 
 const {
   CREATED, BAD_REQUEST, NOT_FOUND, UNAUTHORIZED, INTERNAL_SERVER_ERROR,
@@ -52,7 +53,9 @@ module.exports.createUser = (req, res, next) => {
     .then((hash) => User.create({ name, about, avatar, email, password: hash }))
     .then((user) => res.status(CREATED).send({ data: user }))
     .catch((err) => {
-        if (err.name === 'ValidationError') {
+        if (err.code === 11000) {
+          return next(new ConflictError('Пользователь с такой почтой уже зарегистрирован'))
+        } else if (err.name === 'ValidationError') {
           return next(new BadReqError('переданы некорректные данные'))
         } else {
           next(err)
@@ -100,13 +103,11 @@ module.exports.updateAvatar = (req, res, next) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  User.findOne({ email })
-
+  User.findOne({ email }).select('+password')
   .then((user) => {
     if (!user) {
       return Promise.reject(new NotFoundError('Неправильные почта или пароль'));
     }
-    // console.log(user)
     return bcrypt.compare(password, user.password)
       .then((matched) => {
         if (!matched) {
@@ -117,7 +118,7 @@ module.exports.login = (req, res, next) => {
   })
   .then((user) => {
     const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-    console.log(user);
+    // console.log(user);
     res.send({ token, message: 'Добро пожаловать!' });
   })
   .catch((err) => {
@@ -130,23 +131,3 @@ module.exports.login = (req, res, next) => {
     }
   });
 }
-
-// userSchema.statics.findUserByCredentials = function (email, password) {
-//   return this.findOne({ email })
-//     .then((user) => {
-//       if (!user) {
-//         return Promise.reject(new Error('Неправильные почта или пароль'));
-//       }
-
-//       return bcrypt.compare(password, user.password)
-//         .then((matched) => {
-//           if (!matched) {
-//             return Promise.reject(new Error('Неправильные почта или пароль'));
-//           }
-
-//           return user; // теперь user доступен
-//         });
-//     });
-// };
-
-// module.exports = mongoose.model('user', userSchema);
