@@ -93,7 +93,7 @@ module.exports.updateAvatar = (req, res, next) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  User.findOne({ email }) // добавить метод в модель?
+  User.findOne({ email })
 
   .then((user) => {
     if (!user) {
