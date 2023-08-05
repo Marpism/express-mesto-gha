@@ -49,12 +49,13 @@ app.post('/signup', celebrate({
     password: Joi.string().min(8).required(),
   }),
 }), createUser);
-app.use('*', (req, res) => {
-  res.status(NOT_FOUND).send({ message: 'Страницы не существует' });
-});
+
 app.use(auth);
 app.use('/', usersRouter);
 app.use('/', cardRouter);
+app.use('*', (req, res) => {
+  res.status(NOT_FOUND).send({ message: 'Страницы не существует' });
+});
 
 app.use(errorHandler);
 
