@@ -1,4 +1,4 @@
-const { INTERNAL_SERVER_ERROR, FORBIDDEN } = require('../error_codes/errorCodes');
+const { INTERNAL_SERVER_ERROR, FORBIDDEN } = require('../utils/errorCodes');
 
 module.exports = ((err, req, res, next) => {
   const { statusCode = INTERNAL_SERVER_ERROR, message } = err;

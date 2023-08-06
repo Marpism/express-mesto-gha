@@ -8,7 +8,7 @@ const ConflictError = require('../errors/ConflictError');
 
 const {
   CREATED, BAD_REQUEST, NOT_FOUND, UNAUTHORIZED, INTERNAL_SERVER_ERROR, FORBIDDEN,
-} = require('../error_codes/errorCodes');
+} = require('../utils/errorCodes');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -105,7 +105,7 @@ module.exports.login = (req, res, next) => {
   User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new NotFoundError('Неправильные почта или пароль'));
+        return Promise.reject(new UnauthError('Неправильные почта или пароль'));
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {

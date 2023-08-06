@@ -4,10 +4,11 @@ const process = require('process');
 const { celebrate, Joi, errors } = require('celebrate');
 const usersRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
-const { NOT_FOUND } = require('./error_codes/errorCodes');
+const { NOT_FOUND } = require('./utils/errorCodes');
 const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
 const errorHandler = require('./middlewares/errorHandler');
+const regEx = require('./utils/regEx');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -21,8 +22,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 app.use(errors());
-
-const regEx = (/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/);
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
