@@ -13,8 +13,8 @@ userRouter.patch('/users/me', celebrate({
     name: Joi.string().min(2).max(30).default('Жак-Ив Кусто'),
     about: Joi.string().min(2).max(30).default('Исследователь'),
     avatar: Joi.string().pattern(regEx),
-    email: Joi.string().email().required(),
-    password: Joi.string().min(8).required(),
+    // email: Joi.string().email().required(),
+    // password: Joi.string().min(8).required(),
   }),
 }), updateUser);
 userRouter.patch('/users/me/avatar', updateAvatar);

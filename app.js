@@ -1,6 +1,6 @@
+const process = require('process');
 const mongoose = require('mongoose');
 const express = require('express');
-const process = require('process');
 const { celebrate, Joi, errors } = require('celebrate');
 const usersRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
