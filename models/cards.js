@@ -12,6 +12,7 @@ const cardSchema = new mongoose.Schema({
   },
   link: {
     type: String,
+    required: true,
     validate: {
       validator(url) {
         return isURL(url);
