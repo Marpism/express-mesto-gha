@@ -7,7 +7,7 @@ const UnauthError = require('../errors/UnauthError');
 const ConflictError = require('../errors/ConflictError');
 
 const {
-  CREATED, BAD_REQUEST, NOT_FOUND, UNAUTHORIZED, INTERNAL_SERVER_ERROR,
+  CREATED, BAD_REQUEST, NOT_FOUND, UNAUTHORIZED, INTERNAL_SERVER_ERROR, FORBIDDEN,
 } = require('../error_codes/errorCodes');
 
 module.exports.getUsers = (req, res, next) => {
@@ -75,7 +75,7 @@ module.exports.updateUser = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadReqError('переданы некорректные данные'));
+        return next(new UnauthError('переданы некорректные данные'));
       } if (err.status === NOT_FOUND) {
         return next(new NotFoundError('Пользователь не найден'));
       }
@@ -102,7 +102,7 @@ module.exports.updateAvatar = (req, res, next) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  User.findOne({ email }).select('+password')
+  User.findOne({ email })//.select('+password')
     .then((user) => {
       if (!user) {
         return Promise.reject(new NotFoundError('Неправильные почта или пароль'));

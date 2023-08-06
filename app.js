@@ -22,6 +22,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 
 app.use(errors());
 
+const regEx = (/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/);
+
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
@@ -33,7 +35,7 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).default('Жак-Ив Кусто'),
     about: Joi.string().min(2).max(30).default('Исследователь'),
-    avatar: Joi.string(),
+    avatar: Joi.string().pattern(regEx),
     email: Joi.string().email().required(),
     password: Joi.string().min(8).required(),
   }),
