@@ -18,10 +18,6 @@ userRouter.patch('/users/me', celebrate({
     // password: Joi.string().min(8).required(),
   }),
 }), updateUser);
-userRouter.patch('/users/me/avatar', celebrate({
-  body: Joi.object().keys({
-    avatar: Joi.string().pattern(regEx),
-  }),
-}), updateAvatar);
+userRouter.patch('/users/me/avatar', updateAvatar);
 
 module.exports = userRouter;
