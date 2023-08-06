@@ -61,7 +61,7 @@ module.exports.createUser = (req, res, next) => {
       } if (err.name === 'ValidationError') {
         return next(new BadReqError('переданы некорректные данные'));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -75,11 +75,11 @@ module.exports.updateUser = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new UnauthError('переданы некорректные данные'));
+        return next(new BadReqError('переданы некорректные данные'));
       } if (err.status === NOT_FOUND) {
         return next(new NotFoundError('Пользователь не найден'));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -96,7 +96,7 @@ module.exports.updateAvatar = (req, res, next) => {
       } if (err.name === 'ValidationError') {
         return next(new BadReqError('переданы некорректные данные'));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -124,8 +124,8 @@ module.exports.login = (req, res, next) => {
       if (err.name === 'ValidationError') {
         return next(new BadReqError('переданы некорректные данные'));
       } if (err.status === NOT_FOUND) {
-        return next(new NotFoundError('Неправильные почта или пароль'));
+        return next(new UnauthError('Неправильные почта или пароль'));
       }
-      next(err);
+      return next(err);
     });
 };

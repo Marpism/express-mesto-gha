@@ -22,7 +22,7 @@ module.exports.createCard = (req, res, next) => {
       if (err.name === 'ValidationError') {
         return next(new BadReqError('переданы некорректные данные'));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -35,7 +35,7 @@ module.exports.deleteCard = (req, res, next) => { // ДОПИСАТЬ ЧТОБЫ
       if (!card.owner === req.user._id) {
         throw new ForbiddenError('Нельзя удалить чужую карточку');
       }
-      return card.remove()
+      return card.deleteOne()
         .then((deletedCard) => res.send({ message: `Карточка ${deletedCard._id} успешно удалена` }));
     })
     .catch((err) => {
@@ -44,7 +44,7 @@ module.exports.deleteCard = (req, res, next) => { // ДОПИСАТЬ ЧТОБЫ
       } if (err.status === NOT_FOUND) {
         return next(new NotFoundError('Карточка не найдена'));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -64,7 +64,7 @@ module.exports.likeCard = (req, res, next) => {
       } if (err.name === 'CastError') {
         return next(new BadReqError('переданы некорректные данные'));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -84,6 +84,6 @@ module.exports.dislikeCard = (req, res, next) => {
       } if (err.name === 'CastError') {
         return next(new BadReqError('переданы некорректные данные'));
       }
-      next(err);
+      return next(err);
     });
 };
