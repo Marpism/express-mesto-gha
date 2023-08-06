@@ -102,7 +102,7 @@ module.exports.updateAvatar = (req, res, next) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  User.findOne({ email })//.select('+password')
+  User.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
         return Promise.reject(new NotFoundError('Неправильные почта или пароль'));
@@ -110,7 +110,7 @@ module.exports.login = (req, res, next) => {
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new NotFoundError('Неправильные почта или пароль'));
+            return Promise.reject(new UnauthError('Неправильные почта или пароль'));
           }
           return user;
         });
