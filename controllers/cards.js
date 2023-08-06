@@ -19,21 +19,21 @@ module.exports.createCard = (req, res, next) => {
     .then((card) => res.status(CREATED).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return next(new BadReqError('переданы некорректные данные'))
+        return next(new BadReqError('переданы некорректные данные'));
         // res.status(BAD_REQUEST).send({
         //   message: 'переданы некорректные данные',
         //   // err: err.message
         // });
       }
-        // res.status(INTERNAL_SERVER_ERROR).send({
-        //   message: 'Что-то не так',
-        //   // err: err.message
-        // });
+      // res.status(INTERNAL_SERVER_ERROR).send({
+      //   message: 'Что-то не так',
+      //   // err: err.message
+      // });
       next(err);
     });
 };
 
-module.exports.deleteCard = (req, res, next) => { //ДОПИСАТЬ ЧТОБЫ УДАЛЯТЬ МОГ ТОЛЬКО ОУНЕР
+module.exports.deleteCard = (req, res, next) => { // ДОПИСАТЬ ЧТОБЫ УДАЛЯТЬ МОГ ТОЛЬКО ОУНЕР
   Card.findByIdAndDelete(req.params.cardId)
     .orFail(() => {
       throw new NotFoundError('Карточка не найдена');
@@ -49,15 +49,14 @@ module.exports.deleteCard = (req, res, next) => { //ДОПИСАТЬ ЧТОБЫ 
         //   message: 'переданы некорректные данные',
         //   // err: err.message
         // });
-      } else if (err.status === NOT_FOUND) {
+      } if (err.status === NOT_FOUND) {
         return next(new NotFoundError('Карточка не найдена'));
         // res.status(NOT_FOUND).send({ message: 'Карточка не найдена' });
-      } else {
-        next(err)
-        // res.status(INTERNAL_SERVER_ERROR).send({
-        //   message: 'Что-то не так',
-        // });
       }
+      next(err);
+      // res.status(INTERNAL_SERVER_ERROR).send({
+      //   message: 'Что-то не так',
+      // });
     });
 };
 
@@ -78,19 +77,18 @@ module.exports.likeCard = (req, res, next) => {
       if (err.status === NOT_FOUND) {
         return next(new NotFoundError('Карточка не найдена'));
         // res.status(NOT_FOUND).send({ message: 'Карточка не найдена' });
-      } else if (err.name === 'CastError') {
+      } if (err.name === 'CastError') {
         return next(new BadReqError('переданы некорректные данные'));
         // res.status(BAD_REQUEST).send({
         //   message: 'переданы некорректные данные',
         //   err: err.name,
         // });
-      } else {
-        next(err);
-        // res.status(INTERNAL_SERVER_ERROR).send({
-        //   message: 'Что-то не так',
-        // // err: err.message
-        // });
       }
+      next(err);
+      // res.status(INTERNAL_SERVER_ERROR).send({
+      //   message: 'Что-то не так',
+      // // err: err.message
+      // });
     });
 };
 
@@ -111,18 +109,17 @@ module.exports.dislikeCard = (req, res, next) => {
       if (err.status === NOT_FOUND) {
         return next(new NotFoundError('Карточка не найдена'));
         // res.status(NOT_FOUND).send({ message: 'Карточка не найдена' });
-      } else if (err.name === 'CastError') {
+      } if (err.name === 'CastError') {
         return next(new BadReqError('переданы некорректные данные'));
         // res.status(BAD_REQUEST).send({
         //   message: 'переданы некорректные данные',
         //   err: err.name,
         // });
-      } else {
-        next(err);
-        // res.status(INTERNAL_SERVER_ERROR).send({
-        //   message: 'Что-то не так',
-        // // err: err.message
-        // });
       }
+      next(err);
+      // res.status(INTERNAL_SERVER_ERROR).send({
+      //   message: 'Что-то не так',
+      // // err: err.message
+      // });
     });
 };

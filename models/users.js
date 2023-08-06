@@ -20,9 +20,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     validate: {
       validator(url) {
-        return isURL(url)
+        return isURL(url);
       },
-      message: 'Введены некорректные данные'
+      message: 'Введены некорректные данные',
     },
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
@@ -32,9 +32,9 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: {
       validator(email) {
-        return isEmail(email)
+        return isEmail(email);
       },
-      message: 'Введены некорректные данные'
+      message: 'Введены некорректные данные',
     },
   },
   password: {

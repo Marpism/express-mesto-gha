@@ -24,45 +24,46 @@ module.exports.getUser = (req, res, next) => {
     .then((user) => {
       res.send({ data: user });
     })
+    // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new BadReqError('переданы некорректные данные'))
-      } else if (err.status === NOT_FOUND) {
-        return next(new NotFoundError('Пользователь не найден'))
-      } else {
-        next(err);
+        return next(new BadReqError('переданы некорректные данные'));
+      } if (err.status === NOT_FOUND) {
+        return next(new NotFoundError('Пользователь не найден'));
       }
+      next(err);
     });
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
-User.findById(req.user._id)
-  .then((user) => {
-    if (!user) {
-      throw new NotFoundError('Пользователь не найден')
-    }
-    res.send({ data: user });
-  })
-  .catch(next)
-}
-
-
-module.exports.createUser = (req, res, next) => {
-  const { name, about, avatar, email, password } = req.body;
-  bcrypt.hash(password, 10)
-    .then((hash) => User.create({ name, about, avatar, email, password: hash }))
-    .then((user) => res.status(CREATED).send({ data: user }))
-    .catch((err) => {
-        if (err.code === 11000) {
-          return next(new ConflictError('Пользователь с такой почтой уже зарегистрирован'))
-        } else if (err.name === 'ValidationError') {
-          return next(new BadReqError('переданы некорректные данные'))
-        } else {
-          next(err)
-        }
-      })
+  User.findById(req.user._id)
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Пользователь не найден');
+      }
+      res.send({ data: user });
+    })
+    .catch(next);
 };
 
+module.exports.createUser = (req, res, next) => {
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
+    .then((user) => res.status(CREATED).send({ data: user }))
+    .catch((err) => {
+      if (err.code === 11000) {
+        return next(new ConflictError('Пользователь с такой почтой уже зарегистрирован'));
+      } if (err.name === 'ValidationError') {
+        return next(new BadReqError('переданы некорректные данные'));
+      }
+      next(err);
+    });
+};
 
 module.exports.updateUser = (req, res, next) => {
   const userId = req.user._id;
@@ -75,11 +76,10 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return next(new BadReqError('переданы некорректные данные'));
-      } else if (err.status === NOT_FOUND) {
-          return next(new NotFoundError('Пользователь не найден'))
-      } else {
-          next(err);
+      } if (err.status === NOT_FOUND) {
+        return next(new NotFoundError('Пользователь не найден'));
       }
+      next(err);
     });
 };
 
@@ -93,41 +93,39 @@ module.exports.updateAvatar = (req, res, next) => {
     .catch((err) => {
       if (err.status === NOT_FOUND) {
         return next(new NotFoundError('Пользователь не найден'));
-      } else if (err.name === 'ValidationError') {
-          return next(new BadReqError('переданы некорректные данные'))
-      } else {
-        next(err);
+      } if (err.name === 'ValidationError') {
+        return next(new BadReqError('переданы некорректные данные'));
       }
+      next(err);
     });
 };
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email }).select('+password')
-  .then((user) => {
-    if (!user) {
-      return Promise.reject(new NotFoundError('Неправильные почта или пароль'));
-    }
-    return bcrypt.compare(password, user.password)
-      .then((matched) => {
-        if (!matched) {
-          return Promise.reject(new NotFoundError('Неправильные почта или пароль'));
-        }
-      return user;
-      });
-  })
-  .then((user) => {
-    const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-    // console.log(user);
-    res.send({ token, message: 'Добро пожаловать!' });
-  })
-  .catch((err) => {
-    if (err.name === 'ValidationError') {
-      return next(new BadReqError('переданы некорректные данные'))
-    } else if (err.status === NOT_FOUND) {
-      return next(new NotFoundError('Неправильные почта или пароль'));
-    } else {
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new NotFoundError('Неправильные почта или пароль'));
+      }
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            return Promise.reject(new NotFoundError('Неправильные почта или пароль'));
+          }
+          return user;
+        });
+    })
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      // console.log(user);
+      res.send({ token, message: 'Добро пожаловать!' });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return next(new BadReqError('переданы некорректные данные'));
+      } if (err.status === NOT_FOUND) {
+        return next(new NotFoundError('Неправильные почта или пароль'));
+      }
       next(err);
-    }
-  });
-}
+    });
+};
