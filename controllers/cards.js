@@ -19,14 +19,14 @@ module.exports.createCard = (req, res, next) => {
   Card.create({ name, link, owner })
     .then((card) => res.status(CREATED).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'castError') {
+      if (err.name === 'ValidationError') {
         return next(new BadReqError('переданы некорректные данные'));
       }
       return next(err);
     });
 };
 
-module.exports.deleteCard = (req, res, next) => { // ДОПИСАТЬ ЧТОБЫ УДАЛЯТЬ МОГ ТОЛЬКО ОУНЕР
+module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .orFail(() => {
       throw new NotFoundError('Карточка не найдена');
