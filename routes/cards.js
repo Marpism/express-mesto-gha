@@ -1,10 +1,11 @@
 const cardRouter = require('express').Router();
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 const {
   getCards, createCard, deleteCard, likeCard, dislikeCard,
 } = require('../controllers/cards');
 const regEx = require('../utils/regEx');
 
+cardRouter.use(errors());
 cardRouter.get('/cards', getCards);
 cardRouter.post('/cards', celebrate({
   body: Joi.object().keys({
