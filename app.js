@@ -21,8 +21,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   console.log('Соединение с ДБ установлено');
 });
 
-app.use(errors());
-
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
@@ -40,13 +38,13 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use(errors());
 app.use(auth);
 app.use('/', usersRouter);
 app.use('/', cardRouter);
 app.use('*', (req, res) => {
   res.status(NOT_FOUND).send({ message: 'Страницы не существует' });
 });
+app.use(errors());
 app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
