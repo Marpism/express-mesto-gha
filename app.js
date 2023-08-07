@@ -9,6 +9,7 @@ const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
 const errorHandler = require('./middlewares/errorHandler');
 const regEx = require('./utils/regEx');
+const NotFoundError = require('./errors/NotFoundError');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -41,9 +42,7 @@ app.post('/signup', celebrate({
 app.use(auth);
 app.use('/', usersRouter);
 app.use('/', cardRouter);
-app.use('*', (req, res) => {
-  res.status(NOT_FOUND).send({ message: 'Страницы не существует' });
-});
+app.use('*', (req, res, next) => next(new NotFoundError('Страницы не существует')));
 app.use(errors());
 app.use(errorHandler);
 app.listen(PORT, () => {

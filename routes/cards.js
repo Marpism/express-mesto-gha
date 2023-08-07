@@ -10,8 +10,8 @@ cardRouter.post(
   '/cards',
   celebrate({
     body: Joi.object().keys({
-      name: Joi.string().min(2).max(30),
-      link: Joi.string().pattern(regEx),
+      name: Joi.string().min(2).max(30).required(),
+      link: Joi.string().pattern(regEx).required(),
     }),
   }),
   createCard,
