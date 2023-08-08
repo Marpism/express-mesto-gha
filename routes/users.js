@@ -10,11 +10,10 @@ userRouter.get('/users/me', getCurrentUser);
 userRouter.get(
   '/users/:_id',
   celebrate({
-    body: Joi.object().keys({
-      _Id: Joi.string().length(24).hex().required(),
+    params: Joi.object().keys({
+      userId: Joi.string().length(24).hex().required(),
     }),
   }),
-
   getUser,
 );
 userRouter.patch(
