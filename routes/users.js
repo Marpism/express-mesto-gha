@@ -14,9 +14,6 @@ userRouter.patch(
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30).required(),
       about: Joi.string().min(2).max(30).required(),
-      // avatar: Joi.string().pattern(regEx),
-      // email: Joi.string().email().required(),
-      // password: Joi.string().min(8).required(),
     }),
   }),
   updateUser,
