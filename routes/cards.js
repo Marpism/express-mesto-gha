@@ -20,7 +20,7 @@ cardRouter.delete(
   '/cards/:cardId',
   celebrate({
     body: Joi.object().keys({
-      _id: Joi.string().length(24).hex().required(),
+      cardId: Joi.string().length(24).hex().required(),
     }),
   }),
   deleteCard,
