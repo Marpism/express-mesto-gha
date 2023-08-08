@@ -7,7 +7,16 @@ const regEx = require('../utils/regEx');
 
 userRouter.get('/users', getUsers);
 userRouter.get('/users/me', getCurrentUser);
-userRouter.get('/users/:_id', getUser);
+userRouter.get(
+  '/users/:_id',
+  celebrate({
+    body: Joi.object().keys({
+      _Id: Joi.string().length(24).hex().required(),
+    }),
+  }),
+
+  getUser,
+);
 userRouter.patch(
   '/users/me',
   celebrate({

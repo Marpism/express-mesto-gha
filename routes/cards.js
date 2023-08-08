@@ -25,8 +25,20 @@ cardRouter.delete(
   }),
   deleteCard,
 );
-cardRouter.put('/cards/:cardId/likes', likeCard);
-cardRouter.delete('/cards/:cardId/likes', dislikeCard);
+cardRouter.put(
+  '/cards/:cardId/likes',
+  celebrate({
+    body: Joi.object().keys({
+      cardId: Joi.string().length(24).hex().required(),
+    }),
+  }),
+  likeCard,
+);
+cardRouter.delete('/cards/:cardId/likes', celebrate({
+  body: Joi.object().keys({
+    cardId: Joi.string().length(24).hex().required(),
+  }),
+}), dislikeCard);
 cardRouter.use(errors());
 
 module.exports = cardRouter;
