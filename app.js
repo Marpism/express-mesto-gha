@@ -24,9 +24,9 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   console.log('Соединение с ДБ установлено');
 });
 
-app.use(logger);
 app.use(cors);
 
+app.use(requestLogger); // был просто logger ???
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
