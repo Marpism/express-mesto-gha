@@ -1,7 +1,10 @@
 const allowedCors = [
   'https://marymary.students.nomoreparties.co',
+  'http://marymary.students.nomoreparties.co',
   'https://api.marymary.students.nomoreparties.co',
-  'localhost:3000'
+  'http://api.marymary.students.nomoreparties.co',
+  'localhost:3000',
+  '127.0.0.1:3000'
 ];
 
 module.exports = (req, res, next) => {
