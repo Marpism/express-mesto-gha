@@ -30,7 +30,7 @@ userRouter.patch(
   '/me/avatar',
   celebrate({
     body: Joi.object().keys({
-      avatar: Joi.string().pattern(urlValidator).required,
+      avatar: Joi.string().pattern(urlValidator).required(),
     }),
   }),
   updateAvatar,
