@@ -3,21 +3,21 @@ const { celebrate, Joi, errors } = require('celebrate');
 const {
   getCards, createCard, deleteCard, likeCard, dislikeCard,
 } = require('../controllers/cards');
-const regEx = require('../utils/regEx');
+const urlValidator = require('../utils/urlValidator');
 
-cardRouter.get('/cards', getCards);
+cardRouter.get('/', getCards);
 cardRouter.post(
-  '/cards',
+  '/',
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30).required(),
-      link: Joi.string().pattern(regEx).required(),
+      link: Joi.string().pattern(urlValidator).required(),
     }),
   }),
   createCard,
 );
 cardRouter.delete(
-  '/cards/:cardId',
+  '/:cardId',
   celebrate({
     params: Joi.object().keys({
       cardId: Joi.string().length(24).hex().required(),
@@ -26,7 +26,7 @@ cardRouter.delete(
   deleteCard,
 );
 cardRouter.put(
-  '/cards/:cardId/likes',
+  '/:cardId/likes',
   celebrate({
     params: Joi.object().keys({
       cardId: Joi.string().length(24).hex().required(),
@@ -34,7 +34,7 @@ cardRouter.put(
   }),
   likeCard,
 );
-cardRouter.delete('/cards/:cardId/likes', celebrate({
+cardRouter.delete('/:cardId/likes', celebrate({
   params: Joi.object().keys({
     cardId: Joi.string().length(24).hex().required(),
   }),

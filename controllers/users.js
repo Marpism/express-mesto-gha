@@ -19,7 +19,7 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getUser = (req, res, next) => {
-  User.findById(req.params._id, { lean: false }, { runValidators: true })
+  User.findById(req.params._id)
     .orFail(() => {
       throw new NotFoundError('Пользователь не найден');
     })
@@ -30,10 +30,8 @@ module.exports.getUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         return next(new BadReqError('переданы некорректные данные'));
-      } if (err.status === NOT_FOUND) {
-        return next(new NotFoundError('Пользователь не найден'));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -81,10 +79,8 @@ module.exports.updateUser = (req, res, next) => {
     })
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         return next(new BadReqError('переданы некорректные данные'));
-      } if (err.status === NOT_FOUND) {
-        return next(new NotFoundError('Пользователь не найден'));
       }
       return next(err);
     });
@@ -98,9 +94,7 @@ module.exports.updateAvatar = (req, res, next) => {
     })
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.status === NOT_FOUND) {
-        return next(new NotFoundError('Пользователь не найден'));
-      } if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError') {
         return next(new BadReqError('переданы некорректные данные'));
       }
       return next(err);
@@ -131,8 +125,6 @@ module.exports.login = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return next(new BadReqError('переданы некорректные данные'));
-      } if (err.status === NOT_FOUND) {
-        return next(new UnauthError('Неправильные почта или пароль'));
       }
       return next(err);
     });

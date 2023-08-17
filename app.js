@@ -8,7 +8,7 @@ const { NOT_FOUND } = require('./utils/errorCodes');
 const auth = require('./middlewares/auth');
 const { login, createUser } = require('./controllers/users');
 const errorHandler = require('./middlewares/errorHandler');
-const regEx = require('./utils/regEx');
+const urlValidator = require('./utils/urlValidator');
 const NotFoundError = require('./errors/NotFoundError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const cors = require('./middlewares/cors');
@@ -45,15 +45,15 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).default('Жак-Ив Кусто'),
     about: Joi.string().min(2).max(30).default('Исследователь'),
-    avatar: Joi.string().pattern(regEx),
+    avatar: Joi.string().pattern(urlValidator),
     email: Joi.string().email().required(),
     password: Joi.string().min(8).required(),
   }),
 }), createUser);
 
 app.use(auth);
-app.use('/', usersRouter);
-app.use('/', cardRouter);
+app.use('/users', usersRouter);
+app.use('/cards', cardRouter);
 app.use('*', (req, res, next) => next(new NotFoundError('Страницы не существует')));
 app.use(errorLogger);
 app.use(errors());

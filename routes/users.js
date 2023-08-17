@@ -3,12 +3,12 @@ const { celebrate, Joi, errors } = require('celebrate');
 const {
   getUsers, getUser, getCurrentUser, createUser, updateUser, updateAvatar, login,
 } = require('../controllers/users');
-const regEx = require('../utils/regEx');
+const urlValidator = require('../utils/urlValidator');
 
-userRouter.get('/users', getUsers);
-userRouter.get('/users/me', getCurrentUser);
+userRouter.get('/', getUsers);
+userRouter.get('/me', getCurrentUser);
 userRouter.get(
-  '/users/:_id',
+  '/:_id',
   celebrate({
     params: Joi.object().keys({
       _id: Joi.string().length(24).hex().required(),
@@ -17,7 +17,7 @@ userRouter.get(
   getUser,
 );
 userRouter.patch(
-  '/users/me',
+  '/me',
   celebrate({
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30).required(),
@@ -27,10 +27,10 @@ userRouter.patch(
   updateUser,
 );
 userRouter.patch(
-  '/users/me/avatar',
+  '/me/avatar',
   celebrate({
     body: Joi.object().keys({
-      avatar: Joi.string().pattern(regEx),
+      avatar: Joi.string().pattern(urlValidator).required,
     }),
   }),
   updateAvatar,
