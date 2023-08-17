@@ -6,6 +6,8 @@ const NotFoundError = require('../errors/NotFoundError');
 const UnauthError = require('../errors/UnauthError');
 const ConflictError = require('../errors/ConflictError');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 const {
   CREATED, BAD_REQUEST, NOT_FOUND, UNAUTHORIZED, INTERNAL_SERVER_ERROR, FORBIDDEN,
 } = require('../utils/errorCodes');
@@ -121,7 +123,8 @@ module.exports.login = (req, res, next) => {
         });
     })
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, (NODE_ENV === 'production') ? JWT_SECRET : 'some-secret-key', { expiresIn: '7d' });
+
       // console.log(user);
       res.send({ token, message: 'Добро пожаловать!' });
     })
